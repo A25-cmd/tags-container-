@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tags Selector & Filter - Show All</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <script disable-devtool-auto src='https://cdn.jsdelivr.net/npm/disable-devtool@latest'></script>
+    
+    <style>
+        /* التنسيق العام */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #222; 
+            color: #fff;
+            background-size: cover;
+            background-attachment: fixed;
+            text-align: center;
+        }
+
+        /* تنسيق العناوين */
+        h1 {
+            color: #fad081; 
+            font-size: 30px;
+            margin-top: 30px;
+            border-bottom: 2px solid #555;
+            padding-bottom: 10px;
+        }
+
+        /* تنسيق حاوية الفلاتر */
+        #filter-nav {
+            margin-bottom: 30px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        /* تنسيق أزرار الفلاتر */
+        .filter-btn {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #fad081;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #fad081;
+            color: #000;
+        }
+
+        /* تنسيق حاوية الأزرار (Tags Sections) */
+        .tags-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            display: none; /* إخفاء جميع الحاويات افتراضياً */
+            text-align: left;
+        }
+        
+        /* تنسيق أزرار الأقسام (yy) */
+        .yy {
+            color: #fff; 
+            background-color: rgba(250, 208, 129, 0.2); 
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 20px; 
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            border: 1px solid #fad081; 
+            transition: all 0.3s ease; 
+            display: inline-block;
+        }
+
+        .yy:hover {
+            color: #000;
+            background-color: #fad081;
+            box-shadow: 0 0 10px rgba(250, 208, 129, 0.7);
+        }
+        
+        /* إخفاء نصوص الـ Tags الفعلية */
+        .rr {
+            display: none;
+        }
+        
+        /* تنسيق إشعار النسخ */
+        #notification {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            z-index: 1000;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div id="notification">copied successfully</div>
+
+    <h1> Select category </h1>
+    <div id="filter-nav">
+        <button class="filter-btn" data-target="all">🌟 View all </button>
+        <button class="filter-btn active" data-target="basic">🏷️ Basic </button>
+        <button class="filter-btn" data-target="sales">📊 Sales Tags</button>
+        <button class="filter-btn" data-target="tech">💻 Tech Tags</button>
+        <button class="filter-btn" data-target="voice">📞 Voice Tags</button>
+    </div>
+    
+    <h1 class="section-title" id="basic-title">🏷️ الـTags الأساسية (ADSL)</h1>
+    <div class="tags-container" id="basic-tags">
+        <p id="p1" class="rr">Invoice Inquiry [ADSL]</p>
+        <p id="p2" class="rr">Early renewal [ADSL]</p>
+        <p id="p3" class="rr">My We Usage Issue [ADSL]</p>
+        <p id="p4" class="rr">Change Data [ADSL]</p>
+        <p id="p5" class="rr">Change package [S] [ADSL]</p>
+        <p id="p14" class="rr">Complaint [ADSL]</p>
+        <p id="p18" class="rr">Handled and Dropped [ADSL] </p>
+        <p id="p17" class="rr">Idle or Dropped within chatting [ADSL] </p>
+        <p id="p81" class="rr">Recharge card [ADSL]</p>
+
+        <button class="yy" onclick="copyToClipboard('#p1')">Invoice Inquiry</button>
+        <button class="yy" onclick="copyToClipboard('#p2')">Early renewal </button>
+        <button class="yy" onclick="copyToClipboard('#p3')">Usage Issue </button>
+        <button class="yy" onclick="copyToClipboard('#p4')">Change Data</button>
+        <button class="yy" onclick="copyToClipboard('#p5')">Change package </button>
+        <button class="yy" onclick="copyToClipboard('#p14')">Complaint </button>
+        <button class="yy" onclick="copyToClipboard('#p18')">Handled and Dropped </button>
+        <button class="yy" onclick="copyToClipboard('#p17')">Idle or Dropped (Chatting) </button>
+        <button class="yy" onclick="copyToClipboard('#p81')">Recharge Card </button>
+        <button class="yy" onclick="showSection('sales')">عرض كل Sales Tags</button>
+    </div>
+
+    <h1 class="section-title" id="sales-title" style="display:none;">📊 Sales Tags</h1>
+    <div class="tags-container" id="sales-tags">
+        <p id="p1" class="rr">Invoice Inquiry [ADSL]</p>
+        <p id="p2" class="rr">Early renewal [ADSL]</p>
+        <p id="p3" class="rr">My We Usage Issue [ADSL]</p>
+        <p id="p110" class="rr">Usage [ADSL]</p>
+        <p id="p6" class="rr">My We Renewal date [ADSL]</p>
+        <p id="p81" class="rr">Recharge card [ADSL]</p>
+        <p id="p4" class="rr">Change Data [ADSL]</p>
+        <p id="p5" class="rr">Change package [S] [ADSL]</p>
+        <p id="p25" class="rr">Payment Not Clear [ADSL]</p>
+        <p id="p19" class="rr">Installation Follow Up [ADSL]</p>
+        <p id="p15" class="rr">ADSL and VDSL CPE [ADSL]</p>
+        <p id="p97" class="rr">No answer [ADSL]</p>
+        <p id="p17" class="rr">Idle or Dropped within chatting [ADSL] </p>
+        <p id="p119" class="rr">Idle or Dropped Troubleshooting [ADSL]</p>
+        <p id="p18" class="rr">Handled and Dropped [ADSL] </p>
+        <p id="p85" class="rr">Handled and Idle [ADSL] </p>
+        <p id="p7" class="rr">We App [ADSL]</p>
+        <p id="p90" class="rr">My WE issues [ADSL]</p>
+        <p id="p93" class="rr">My WE Registration [ADSL]</p>
+        <p id="p8" class="rr">Concession [ADSL]</p>
+        <p id="p9" class="rr">Cancellation [Data] [ADSL] </p>
+        <p id="p11" class="rr">Transferred to Mobile [ADSL]</p>
+        <p id="p12" class="rr">Transferred To Voice [ADSL]</p>
+        <p id="p10" class="rr">My WE Recharge Quota [ADSL]</p>
+        <p id="p83" class="rr">Disabled matrix [ADSL]</p>
+        <p id="p13" class="rr">New Subscription Created [ADSL]</p>
+        <p id="p14" class="rr">Complaint [ADSL]</p>
+        <p id="p16" class="rr">Salefny [ADSL]</p>
+        <p id="p20" class="rr">Username & Password [T] </p>
+        <p id="p21" class="rr">TE Bills Residential [ADSL]</p>
+        <p id="p22" class="rr">Change Phone number [ADSL]</p>
+        <p id="p23" class="rr">Refund [Data] [ADSL]</p>
+        <p id="p24" class="rr">OP Technical Issue [ADSL]</p>
+        <p id="p80" class="rr">Contact Us [ADSL]</p>
+        <p id="p84" class="rr">Offers [ADSL]</p>
+        <p id="p86" class="rr">Balance Fraction (Adjustment Case) </p>
+        <p id="p87" class="rr">WATCH IT [ADSL] </p>
+        <p id="p88" class="rr">WE Top UP [ADSL] </p>
+        <p id="p89" class="rr">Harassment/Scam Chats[ADSL]</p>
+        <p id="p91" class="rr">Indigo [ADSL] </p>
+        <p id="p101" class="rr">Telephonet [ADSL] </p>
+        <p id="p92" class="rr">Level up [ADSL] </p>
+        <p id="p94" class="rr">Careers [ADSL] </p>
+        <p id="p95" class="rr">Happy Customer [ADSL]</p>
+        <p id="p96" class="rr">Spamming [ADSL] </p>
+        <p id="p98" class="rr">Tools Outage [ADSL] </p>
+        <p id="p99" class="rr">Online Payment [ADSL] </p>
+        <p id="p100" class="rr">Individual cases [ADSL]</p>
+        <p id="p102" class="rr">Quota Recharged (Adjustment Case) [ADSL] </p>
+        <p id="p103" class="rr">Link Agreement [ADSL]</p>
+        <p id="p104" class="rr">(we space) [ADSL]</p>
+        <p id="p105" class="rr">WE Bonus [ADSL] </p>
+        <p id="p106" class="rr">Balance [ADSL] </p>
+        <p id="p107" class="rr">Recharge by mistake [ADSL] </p>
+        <p id="p108" class="rr">Suspended Service [Data] [ADSL] </p>
+        <p id="p109" class="rr">E-Machines Payment [ADSL] </p>
+        <p id="p111" class="rr">CVM Q1 Promo [ADSL]</p>
+        <p id="p112" class="rr">Ramdan We Bonus loyalty 360 [ADSL]</p>
+        <p id="p113" class="rr">Watch iT Ramadan Promo [ADSL]</p>
+        <p id="p114" class="rr">Ramadan Promo 2022 [ADSL]</p>
+        <p id="p117" class="rr">Unlimited Hashtag Campaign [ADSL]</p>
+        <p id="p120" class="rr">Unclear inquiry Idle or Dropped [ADSL]</p>
+        <p id="p121" class="rr">Idle or Dropped Before transfer [ADSL]</p>
+        <p id="p118" class="rr">BSS Sales [ADSL]</p>
+        <p id="p122" class="rr">Multiple Account – Registered</p>
+        <p id="p123" class="rr">Multiple Account – Anonymous [ADSL]</p>
+        <p id="p124" class="rr">VDSL Port VS ADSL CPE [ADSL]</p>
+        <p id="p125" class="rr">Store Location [ADSL]</p>
+        <p id="p126" class="rr">The compensation added on new line</p>
+        <p id="p127" class="rr">Customer accept the compensation</p>
+        <p id="p128" class="rr">Customer don’t have WE line</p>
+        <p id="p129" class="rr">Customer refuse the compensation</p>
+        <p id="p115" class="rr">Handled and Dropped - Customer Side [ADSL]</p>
+        <p id="p116" class="rr">Handled and Idle Customer</p>
+
+        <button class="yy" onclick="copyToClipboard('#p1')">Invoice Inquiry</button>
+        <button class="yy" onclick="copyToClipboard('#p2')">Early renewal </button>
+        <button class="yy" onclick="copyToClipboard('#p3')">Usage Issue </button>
+        <button class="yy" onclick="copyToClipboard('#p110')">Usage </button>
+        <button class="yy" onclick="copyToClipboard('#p6')">Renewal Date </button>
+        <button class="yy" onclick="copyToClipboard('#p81')">Recharge Card </button>
+        <button class="yy" onclick="copyToClipboard('#p4')">Change Data</button>
+        <button class="yy" onclick="copyToClipboard('#p5')">Change package </button>
+        <button class="yy" onclick="copyToClipboard('#p25')">Payment Not Clear </button>
+        <button class="yy" onclick="copyToClipboard('#p19')">Installation Follow</button>
+        <button class="yy" onclick="copyToClipboard('#p15')">CPE Inquiry </button>
+        <button class="yy" onclick="copyToClipboard('#p97')">No Answer </button>
+        <button class="yy" onclick="copyToClipboard('#p17')">Idle or Dropped within chatting </button>
+        <button class="yy" onclick="copyToClipboard('#p119')">Idle or Dropped Troubleshooting</button>
+        <button class="yy" onclick="copyToClipboard('#p18')">Handled and Dropped </button>
+        <button class="yy" onclick="copyToClipboard('#p85')">Handled and Idle </button>
+        <button class="yy" onclick="copyToClipboard('#p7')">We App </button>
+        <button class="yy" onclick="copyToClipboard('#p90')">My WE issues</button>
+        <button class="yy" onclick="copyToClipboard('#p93')">My WE Registration </button>
+        <button class="yy" onclick="copyToClipboard('#p8')">Concession </button>
+        <button class="yy" onclick="copyToClipboard('#p9')">Cancellation </button>
+        <button class="yy" onclick="copyToClipboard('#p11')">Transfer Mobile </button>
+        <button class="yy" onclick="copyToClipboard('#p12')">Transfer Voice </button>
+        <button class="yy" onclick="copyToClipboard('#p10')">Extra Quota </button>
+        <button class="yy" onclick="copyToClipboard('#p83')">Disabled matrix </button>
+        <button class="yy" onclick="copyToClipboard('#p13')">New Subscription </button>
+        <button class="yy" onclick="copyToClipboard('#p14')">Complaint </button>
+        <button class="yy" onclick="copyToClipboard('#p16')">Salefny </button>
+        <button class="yy" onclick="copyToClipboard('#p20')">Username & Password</button>
+        <button class="yy" onclick="copyToClipboard('#p21')">TE Bills </button>
+        <button class="yy" onclick="copyToClipboard('#p22')">Change Phone number</button>
+        <button class="yy" onclick="copyToClipboard('#p23')">Refund </button>
+        <button class="yy" onclick="copyToClipboard('#p24')">OP Technical </button>
+        <button class="yy" onclick="copyToClipboard('#p80')">Contact Us </button>
+        <button class="yy" onclick="copyToClipboard('#p84')">Offers ADSL </button>
+        <button class="yy" onclick="copyToClipboard('#p86')">Balance Fraction </button>
+        <button class="yy" onclick="copyToClipboard('#p87')">WATCH IT </button>
+        <button class="yy" onclick="copyToClipboard('#p88')">WE Top UP </button>
+        <button class="yy" onclick="copyToClipboard('#p89')">Harassment/Scam </button>
+        <button class="yy" onclick="copyToClipboard('#p91')">Indigo </button>
+        <button class="yy" onclick="copyToClipboard('#p101')">Telephonet </button>
+        <button class="yy" onclick="copyToClipboard('#p92')">Level up </button>
+        <button class="yy" onclick="copyToClipboard('#p94')">Careers </button>
+        <button class="yy" onclick="copyToClipboard('#p95')">Happy Customer</button>
+        <button class="yy" onclick="copyToClipboard('#p96')">Spamming </button>
+        <button class="yy" onclick="copyToClipboard('#p98')">Tools Outage </button>
+        <button class="yy" onclick="copyToClipboard('#p99')">Online Payment </button>
+        <button class="yy" onclick="copyToClipboard('#p100')">Individual cases</button>
+        <button class="yy" onclick="copyToClipboard('#p102')">Quota Recharged</button>
+        <button class="yy" onclick="copyToClipboard('#p103')">Link Agreement</button>
+        <button class="yy" onclick="copyToClipboard('#p104')">(we space) </button>
+        <button class="yy" onclick="copyToClipboard('#p105')">WE Bonus </button>
+        <button class="yy" onclick="copyToClipboard('#p106')">Balance </button>
+        <button class="yy" onclick="copyToClipboard('#p107')">Recharge by mistake </button>
+        <button class="yy" onclick="copyToClipboard('#p108')">Suspended Service </button>
+        <button class="yy" onclick="copyToClipboard('#p109')">E-Machines Payment</button>
+        <button class="yy" onclick="copyToClipboard('#p111')">CVM Q1 </button>
+        <button class="yy" onclick="copyToClipboard('#p112')">Ramdan We Bonus loyalty </button>
+        <button class="yy" onclick="copyToClipboard('#p113')">Watch iT Ramadan Promo </button>
+        <button class="yy" onclick="copyToClipboard('#p114')">Ramadan Promo 2022 </button>
+        <button class="yy" onclick="copyToClipboard('#p117')">Unlimited Hashtag</button>
+        <button class="yy" onclick="copyToClipboard('#p120')">Unclear inquiry Idle or Dropped</button>
+        <button class="yy" onclick="copyToClipboard('#p121')">Idle or Dropped Before transfer</button>
+        <button class="yy" onclick="copyToClipboard('#p118')">BSS Sales</button>
+        <button class="yy" onclick="copyToClipboard('#p122')">Multiple Account Registered</button>
+        <button class="yy" onclick="copyToClipboard('#p123')">Multiple Account Anonymous </button>
+        <button class="yy" onclick="copyToClipboard('#p124')">VDSL Port VS ADSL CPE </button>
+        <button class="yy" onclick="copyToClipboard('#p125')">Store Location </button>
+        <button class="yy" onclick="copyToClipboard('#p126')">The compensation added on new line </button>
+        <button class="yy" onclick="copyToClipboard('#p127')">Customer accept the compensation </button>
+        <button class="yy" onclick="copyToClipboard('#p128')">Customer don’t have WE line </button>
+        <button class="yy" onclick="copyToClipboard('#p129')">Customer refuse the compensation </button>
+        <button class="yy" onclick="copyToClipboard('#p115')">Handled and Dropped - Customer Side</button>
+        <button class="yy" onclick="copyToClipboard('#p116')">Handled and Idle Customer</button>
+    </div>
+
+    <h1 class="section-title" id="tech-title" style="display:none;">💻 Tech Tags</h1>
+    <div class="tags-container" id="tech-tags">
+        <p id="p26" class="rr">Physical Problem [T] </p>
+        <p id="p27" class="rr">BLQ [T] [ADSL]</p>
+        <p id="p28" class="rr">Data Down [ADSL]</p>
+        <p id="p29" class="rr">Data & Voice Down [ADSL]</p>
+        <p id="p30" class="rr">Voice Down [ADSL]</p>
+        <p id="p35" class="rr">Slowness [T] [ADSL]</p>
+        <p id="p37" class="rr">Wireless [Problem - Settings] [T]</p>
+        <p id="p32" class="rr">Browsing [T] [ADSL]</p>
+        <p id="p40" class="rr">Need Optimization [ADSL]</p>
+        <p id="p33" class="rr">Unable to obtain IP [T]</p>
+        <p id="p34" class="rr">Logical Instability [T]</p>
+        <p id="p36" class="rr">Global Problem [T] [ADSL]</p>
+        <p id="p31" class="rr">Wrong card and port [ADSL]</p>
+        <p id="p38" class="rr">OP Technical Issue [ADSL]</p>
+        <p id="p39" class="rr">Family Technical Issue [ADSL]</p>
+        <p id="p41" class="rr">Online Games [ADSL]</p>
+        <p id="p42" class="rr">Username & Password [T]</p>
+        <p id="p43" class="rr">Hosting Technical Issue [ADSL]</p>
+        <p id="p44" class="rr">Disabled matrix [ADSL]</p>
+        <p id="p45" class="rr">Unsupported Cases [ADSL]</p>
+        <p id="p46" class="rr">Dropped - Troubleshooting [ADSL]</p>
+        <p id="p47" class="rr">Voice overlapping [ADSL]</p>
+        <p id="p48" class="rr">VOIP [ADSL]</p>
+        <p id="p130" class="rr">Delay-Escalation [ADSL] </p>
+        <p id="p131" class="rr">FTTH Migration - Manual Suspension HK [ADSL]</p>
+        <p id="p49" class="rr">BSS Technical [ADSL]</p>
+
+        <button class="yy" onclick="copyToClipboard('#p26')">Physical Instability</button>
+        <button class="yy" onclick="copyToClipboard('#p27')">BLQ </button>
+        <button class="yy" onclick="copyToClipboard('#p28')">Data Down </button>
+        <button class="yy" onclick="copyToClipboard('#p29')">Data & Voice </button>
+        <button class="yy" onclick="copyToClipboard('#p30')">Voice Down</button>
+        <button class="yy" onclick="copyToClipboard('#p35')">Slowness </button>
+        <button class="yy" onclick="copyToClipboard('#p37')">Wireless</button>
+        <button class="yy" onclick="copyToClipboard('#p32')">Browsing </button>
+        <button class="yy" onclick="copyToClipboard('#p40')">Need Optimization </button>
+        <button class="yy" onclick="copyToClipboard('#p33')">Unable to Obtain</button>
+        <button class="yy" onclick="copyToClipboard('#p34')">logical Instability </button>
+        <button class="yy" onclick="copyToClipboard('#p36')">Global </button>
+        <button class="yy" onclick="copyToClipboard('#p31')">Wrong card and port </button>
+        <button class="yy" onclick="copyToClipboard('#p38')">Option Pack </button>
+        <button class="yy" onclick="copyToClipboard('#p39')">Family Filter </button>
+        <button class="yy" onclick="copyToClipboard('#p41')">Online Games </button>
+        <button class="yy" onclick="copyToClipboard('#p42')">Username and Passowrd </button>
+        <button class="yy" onclick="copyToClipboard('#p43')">Hosting Tech Isue </button>
+        <button class="yy" onclick="copyToClipboard('#p44')">Disbale Matrix </button>
+        <button class="yy" onclick="copyToClipboard('#p45')">UnSupporeted </button>
+        <button class="yy" onclick="copyToClipboard('#p46')">Dropped T.S </button>
+        <button class="yy" onclick="copyToClipboard('#p47')">Voice OverLapping </button>
+        <button class="yy" onclick="copyToClipboard('#p48')">VOIP </button>
+        <button class="yy" onclick="copyToClipboard('#p130')">Delay-Escalation </button>
+        <button class="yy" onclick="copyToClipboard('#p131')">FTTH Migration-Manual Suspension HK </button>
+        <button class="yy" onclick="copyToClipboard('#p49')">Bss Technical </button>
+    </div>
+
+    <h1 class="section-title" id="voice-title" style="display:none;">📞 Voice Tags</h1>
+    <div class="tags-container" id="voice-tags">
+        <p id="p132" class="rr">FCC New Ticket { Voice }</p>
+        <p id="p133" class="rr">FCC Within SLA { Voice }</p>
+        <p id="p134" class="rr">FCC Pending { Voice }</p>
+        <p id="p157-r" class="rr">Receiving Only Problem { Voice }</p> 
+        <p id="p158-r" class="rr">Receiving Only VAS { Voice }</p>
+        <p id="p135" class="rr">Bill Amount { Voice }</p>
+        <p id="p136" class="rr">Bill Description { Voice }</p>
+        <p id="p137" class="rr">Bill Cycle { Voice }</p>
+        <p id="p138" class="rr">Payment Info { Voice }</p>
+        <p id="p139" class="rr">Billing Cut off { Voice }</p>
+        <p id="p140" class="rr">Payment Methods { Voice }</p>
+        <p id="p141" class="rr">Bill Complaints { Voice }</p>
+        <p id="p142" class="rr">New subscription Procedures { Voice }</p>
+        <p id="p143" class="rr">New subscription Request { Voice }</p>
+        <p id="p144" class="rr">New subscription Follow up { Voice }</p>
+        <p id="p145" class="rr">New subscription Complaint { Voice }</p>
+        <p id="p146" class="rr">Transferred To GSM Directly { Voice }</p>
+        <p id="p147" class="rr">No Answer [Chat Beginning] { Voice }</p>
+        <p id="p148" class="rr">Line Transfer Precedure { Voice }</p>
+        <p id="p149" class="rr">Change Data { Voice }</p>
+        <p id="p150" class="rr">Change Phone Number { Voice }</p>
+        <p id="p151" class="rr">WE Ardy Bundles { Voice }</p>
+        <p id="p152" class="rr">Telegram { Voice }</p>
+        <p id="p153" class="rr">Fax { Voice }</p>
+        <p id="p154" class="rr">Tools Outage { Voice }</p>
+        <p id="p155" class="rr">General Inquiry { Voice }</p>
+        <p id="p156" class="rr">Devices { Voice }</p>
+        <p id="p157-a" class="rr">FCC Mass { Voice }</p> 
+        <p id="p158-a" class="rr">Refund { Voice }</p>
+        <p id="p159" class="rr">Online Payment Complaint { Voice }</p>
+        <p id="p160" class="rr">Online Payment Inquiry { Voice }</p>
+        <p id="p161" class="rr">Internet Issue after Paying Voice Bill { Voice }</p>
+        <p id="p162" class="rr">Other Billing Cases { Voice }</p>
+        <p id="p163" class="rr">Line Reactivation { Voice }</p>
+        <p id="p164" class="rr">Temp Suspension Request { Voice }</p>
+        <p id="p165" class="rr">Line Cancelation { Voice }</p>
+        <p id="p166" class="rr">Temp Suspension Due to Bill { Voice }</p>
+        <p id="p167" class="rr">Final Deactivation Due to Bill { Voice }</p>
+        <p id="p168" class="rr">Caller ID { Voice }</p>
+        <p id="p169" class="rr">Alarm { Voice }</p>
+        <p id="p170" class="rr">National { Voice }</p>
+        <p id="p171" class="rr">International { Voice }</p>
+        <p id="p172" class="rr">Don't Disturb { Voice }</p>
+        <p id="p173" class="rr">New Offer Inquiry { Voice }</p>
+        <p id="p174" class="rr">SMS Campaign { Voice }</p>
+        <p id="p175" class="rr">National Offer { Voice }</p>
+        <p id="p176" class="rr">Governmental Offer { Voice }</p>
+        <p id="p177" class="rr">Tools Outage { Voice }</p>
+        <p id="p178" class="rr">Handled Then Transferred To GSM { Voice } </p>
+        <p id="p179" class="rr">Transferred To GSM Directly { Voice } </p>
+        <p id="p180" class="rr">Dropped without Customer's Inquiry { Voice } </p>
+        <p id="p181" class="rr">Dropped - Customer Side { Voice } </p>
+        <p id="p182" class="rr">Dropped before being Transferred to Related Queue { Voice } </p>
+        <p id="p183" class="rr">No Answer [Chat Beginning] { Voice } </p>
+        <p id="p184" class="rr">Idle Customer { Voice } </p>
+        <p id="p185" class="rr">Package Explanation { Voice } </p>
+        <p id="p186" class="rr">Line Data { Voice } </p>
+        <p id="p187" class="rr">Change Line Category { Voice } </p>
+        <p id="p188" class="rr">Change Line Type { Voice } </p>
+        <p id="p189" class="rr">Change Ownership { Voice } </p>
+        <p id="p190" class="rr">Change Package { Voice } </p>
+        <p id="p191" class="rr">Change External Cable { Voice } </p>
+        <p id="p192" class="rr">Change Internal Cable { Voice } </p>
+        <p id="p193" class="rr">WE Ardy Bundles { Voice } </p>
+        <p id="p194" class="rr">WE Ardy Change Package { Voice } </p>
+        <p id="p195" class="rr">Super Telephonet Bills { Voice } </p>
+        <p id="p198" class="rr">Super Telephonet Complaints { Voice } </p>
+        <p id="p196" class="rr">Company Process/Policy { Voice } </p>
+        <p id="p197" class="rr">Change Box { Voice } </p>
+        <p id="p199" class="rr">140 Directory { Voice } </p>
+        <p id="p200" class="rr">Kalamy { Voice } </p>
+        <p id="p201" class="rr">Annual Line { Voice } </p>
+
+        <button class="yy" onclick="copyToClipboard('#p132')">FCC New Ticket</button>
+        <button class="yy" onclick="copyToClipboard('#p133')">FCC Within SLA </button>
+        <button class="yy" onclick="copyToClipboard('#p134')">FCC Pending </button>
+        <button class="yy" onclick="copyToClipboard('#p157-r')">Receiving Only Problem </button>
+        <button class="yy" onclick="copyToClipboard('#p158-r')">Receiving Only VAS </button>
+        <button class="yy" onclick="copyToClipboard('#p135')">Bill Amount </button>
+        <button class="yy" onclick="copyToClipboard('#p136')">Bill Description</button>
+        <button class="yy" onclick="copyToClipboard('#p137')">Bill Cycle </button>
+        <button class="yy" onclick="copyToClipboard('#p138')">Payment Info </button>
+        <button class="yy" onclick="copyToClipboard('#p139')">Billing Cut off</button>
+        <button class="yy" onclick="copyToClipboard('#p140')">Payment Methods </button>
+        <button class="yy" onclick="copyToClipboard('#p141')">Bill Complaints</button>
+        <button class="yy" onclick="copyToClipboard('#p142')">New subscription Procedures</button>
+        <button class="yy" onclick="copyToClipboard('#p143')">New subscription Request </button>
+        <button class="yy" onclick="copyToClipboard('#p144')">New subscription Follow up </button>
+        <button class="yy" onclick="copyToClipboard('#p145')">New subscription Complaint</button>
+        <button class="yy" onclick="copyToClipboard('#p146')">Transferred To GSM </button>
+        <button class="yy" onclick="copyToClipboard('#p147')">No Answer </button>
+        <button class="yy" onclick="copyToClipboard('#p148')">Line Transfer Precedure </button>
+        <button class="yy" onclick="copyToClipboard('#p149')">Change Data </button>
+        <button class="yy" onclick="copyToClipboard('#p150')">Change Phone Number </button>
+        <button class="yy" onclick="copyToClipboard('#p151')">WE Ardy Bundles</button>
+        <button class="yy" onclick="copyToClipboard('#p152')">Telegram </button>
+        <button class="yy" onclick="copyToClipboard('#p153')">Fax </button>
+        <button class="yy" onclick="copyToClipboard('#p154')">Tools Outage</button>
+        <button class="yy" onclick="copyToClipboard('#p156')">Devices </button>
+        <button class="yy" onclick="copyToClipboard('#p157-a')">FCC Mass </button>
+        <button class="yy" onclick="copyToClipboard('#p158-a')">Refund </button>
+        <button class="yy" onclick="copyToClipboard('#p159')">Online Payment Complaint </button>
+        <button class="yy" onclick="copyToClipboard('#p160')">Online Payment Inquiry </button>
+        <button class="yy" onclick="copyToClipboard('#p161')">Internet Issue after Paying Voice Bill </button>
+        <button class="yy" onclick="copyToClipboard('#p162')">Other Billing Cases </button>
+        <button class="yy" onclick="copyToClipboard('#p163')">Line Reactivation </button>
+        <button class="yy" onclick="copyToClipboard('#p164')">Temp Suspension Request </button>
+        <button class="yy" onclick="copyToClipboard('#p165')">Line Cancelation </button>
+        <button class="yy" onclick="copyToClipboard('#p166')">Temp Suspension Due to Bill </button>
+        <button class="yy" onclick="copyToClipboard('#p167')">Final Deactivation Due to Bill </button>
+        <button class="yy" onclick="copyToClipboard('#p168')">Caller ID </button>
+        <button class="yy" onclick="copyToClipboard('#p169')">Alarm </button>
+        <button class="yy" onclick="copyToClipboard('#p170')">National </button>
+        <button class="yy" onclick="copyToClipboard('#p171')">International </button>
+        <button class="yy" onclick="copyToClipboard('#p172')">Don't Disturb </button>
+        <button class="yy" onclick="copyToClipboard('#p173')">New Offer Inquiry </button>
+        <button class="yy" onclick="copyToClipboard('#p174')">SMS Campaign </button>
+        <button class="yy" onclick="copyToClipboard('#p175')">National Offer </button>
+        <button class="yy" onclick="copyToClipboard('#p176')">Governmental Offer </button>
+        <button class="yy" onclick="copyToClipboard('#p177')">Tools Outage </button>
+        <button class="yy" onclick="copyToClipboard('#p178')">Handled Then Transferred To GSM </button>
+        <button class="yy" onclick="copyToClipboard('#p179')">Transferred To GSM Directly </button>
+        <button class="yy" onclick="copyToClipboard('#p180')">Dropped without Customer's Inquiry </button>
+        <button class="yy" onclick="copyToClipboard('#p181')">Dropped - Customer Side </button>
+        <button class="yy" onclick="copyToClipboard('#p182')">Dropped before being Transferred to Related Queue </button>
+        <button class="yy" onclick="copyToClipboard('#p183')">No Answer [Chat Beginning] </button>
+        <button class="yy" onclick="copyToClipboard('#p184')">Idle Customer </button>
+        <button class="yy" onclick="copyToClipboard('#p185')">Package Explanation </button>
+        <button class="yy" onclick="copyToClipboard('#p186')">Line Data </button>
+        <button class="yy" onclick="copyToClipboard('#p187')">Change Line Category </button>
+        <button class="yy" onclick="copyToClipboard('#p188')">Change Line Type </button>
+        <button class="yy" onclick="copyToClipboard('#p189')">Change Ownership </button>
+        <button class="yy" onclick="copyToClipboard('#p190')">Change Package </button>
+        <button class="yy" onclick="copyToClipboard('#p191')">Change External Cable </button>
+        <button class="yy" onclick="copyToClipboard('#p192')">Change Internal Cable </button>
+        <button class="yy" onclick="copyToClipboard('#p193')">WE Ardy Bundles </button>
+        <button class="yy" onclick="copyToClipboard('#p194')">WE Ardy Change Package </button>
+        <button class="yy" onclick="copyToClipboard('#p195')">Super Telephonet Bills </button>
+        <button class="yy" onclick="copyToClipboard('#p198')">Super Telephonet Complaints </button>
+        <button class="yy" onclick="copyToClipboard('#p196')">Company Process/Policy </button>
+        <button class="yy" onclick="copyToClipboard('#p197')">Change Box </button>
+        <button class="yy" onclick="copyToClipboard('#p199')">140 Directory </button>
+        <button class="yy" onclick="copyToClipboard('#p200')">Kalamy </button>
+        <button class="yy" onclick="copyToClipboard('#p201')">Annual Line </button>
+        <button class="yy" onclick="copyToClipboard('#p155')">General Inquiry </button>
+    </div>
+
+    <script>
+        const notification = document.getElementById("notification");
+        
+        // قائمة بجميع الـ IDs الخاصة بالأقسام
+        const allSections = ['basic', 'sales', 'tech', 'voice'];
+
+        // ----------------------------------------------------------------
+        // وظيفة النسخ (Copy Function)
+        // ----------------------------------------------------------------
+        function copyToClipboard(elementSelector) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val($(elementSelector).text()).select(); 
+            document.execCommand("copy");
+            $temp.remove();
+
+            notification.textContent = $(elementSelector).text() + " copied successfully";
+            notification.style.opacity = 1;
+            setTimeout(function () {
+                notification.style.opacity = 0;
+            }, 1500);
+        }
+
+        // ----------------------------------------------------------------
+        // وظيفة التصفية (Filtering Function)
+        // ----------------------------------------------------------------
+        function showSection(targetId) {
+            // إخفاء كل الأقسام وعناوينها
+            $('.tags-container').hide();
+            $('.section-title').hide();
+            
+            // إزالة حالة التفعيل من جميع أزرار الفلترة
+            $('.filter-btn').removeClass('active');
+            
+            // تفعيل الزر الذي تم النقر عليه
+            $('button[data-target="' + targetId + '"]').addClass('active');
+
+            if (targetId === 'all') {
+                // عرض جميع الأقسام وعناوينها
+                allSections.forEach(function(section) {
+                    $('#' + section + '-tags').show();
+                    $('#' + section + '-title').show();
+                });
+            } else {
+                // عرض القسم المطلوب فقط
+                $('#' + targetId + '-tags').show();
+                $('#' + targetId + '-title').show();
+            }
+        }
+        
+        // ----------------------------------------------------------------
+        // معالجة الأحداث بعد تحميل الصفحة
+        // ----------------------------------------------------------------
+        $(document).ready(function() {
+            // تعيين وظيفة عرض الأقسام على أزرار الفلاتر
+            $('.filter-btn').on('click', function() {
+                var target = $(this).data('target');
+                showSection(target);
+            });
+
+            // عرض قسم "الأساسية" عند تحميل الصفحة لأول مرة
+            showSection('basic');
+        });
+
+        // ----------------------------------------------------------------
+        // وظائف حماية أدوات المطور (F12 والزر الأيمن)
+        // ----------------------------------------------------------------
+
+        // منع مفتاح F12
+        document.onkeydown = function (e) {
+            if (e.keyCode == 123) {
+                return false;
+            }
+        };
+
+        // منع النقر بزر الماوس الأيمن (Context Menu)
+        document.oncontextmenu = function () {
+            return false;
+        };
+        
+    </script>
+</body>
+</html>
